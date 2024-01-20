@@ -52,12 +52,13 @@ function Viewers() {
         }
     };
     return (
-        <div>
+        <div className='w-full'>
             <Container>
 
                 <Wrap
                     onMouseEnter={() => handleMouseEnter('disney')}
                     onMouseLeave={() => handleMouseLeave('disney')}
+                    className='viewer'
                 >
                     {isDisneyHovered ? (
                         <Video autoPlay muted loop>
@@ -134,6 +135,15 @@ const Container = styled.div`
   grid-gap: 25px;
   padding: 30px 0px 26px;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  @media (max-width: 426px) {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* Display 3 items on a single row */
+    grid-gap: 15px; /* Adjust the gap between items */
+    justify-content: center;
+    padding: 0px;
+    margin-bottom: 20px;
+  }
 `;
 
 const Wrap = styled.div`
@@ -158,6 +168,11 @@ const Wrap = styled.div`
     border-color: rgba(249, 249, 249, 0.8);
     box-shadow: rgb(0 0 0 / 80%) 0px 40px 58px -16px,
       rgb(0 0 0 / 72%) 0px 30px 22px -10px;
+  }
+
+  @media (max-width: 426px) {
+    margin: 0px; /* Add margin to create spacing between and below elements */
+    border: 1px solid rgba(249, 249, 249, 0.1);
   }
 `;
 

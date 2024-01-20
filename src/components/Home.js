@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import ImageSlider from './ImageSlider';
 import Viewers from './Viewers';
 import Movies from './Movies';
+import { Link } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 function Home() {
     useEffect(() => {
@@ -15,10 +18,12 @@ function Home() {
         }
     }, []);
     return (
-        <Container>
+        <Container className='relative'>
             <ImageSlider />
             <Viewers />
             <Movies />
+            
+
         </Container>
     );
 }
@@ -31,6 +36,7 @@ const Container = styled.main`
     position: relative;
     overflow-x: hidden;
 
+
     &:before {
         background: url("/images/home-background.png") center center / cover no-repeat fixed;
         content: '';
@@ -41,4 +47,12 @@ const Container = styled.main`
         bottom: 0;
         z-index: -1;
     }
+
+    @media (max-width:425px){
+        padding-top:48px;
+    }
+
 `;
+
+
+

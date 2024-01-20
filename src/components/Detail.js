@@ -60,6 +60,8 @@ function Detail() {
       {singleMovie && <Background>
         <img src={`${imgUrl}${singleMovie.backdrop_path}`} alt='' />
       </Background>}
+
+      <DiffDIV>
       <ImageTitle>
         <img onError={(e) => {
           e.target.src = 'https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78'; // Replace 'path_to_alternative_image.jpg' with the actual path to your alternative image
@@ -93,19 +95,26 @@ function Detail() {
       <Description>
         {singleMovie?.overview}
       </Description>
+      </DiffDIV>
 
       <Dialog open={openModel} maxWidth sx={{ padding: 0, margin: 0, borderRadius: 0 }} onClose={() => setOpenModel(false)}>
         <DialogActions sx={{ padding: 0 }}>
           <Paper sx={{ padding: 0 }} style={{ backgroundColor: '#040714', color: 'white', borderRadius: 0, boxShadow: 'none', padding: 0, margin: 0 }}>
-            <DialogContent >
+            <DIALOGCONTENT>
+            <DialogContent  >
+              <JUST>
               <div style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "5px solid #b185ff", borderLeft: "5px solid #b185ff" }} className='w-[250px] flex justify-center p-1 bg-neutral-700 rounded-xl'>
                 <h2 className='text-2xl mt-0'>Official Trailer</h2>
               </div>
+              </JUST>
               <div style={{ borderTop: "2px solid #636363 ", }} className='w-full h-3 mt-5'></div>
               <div style={{ borderBottom: "2px solid #636363" }} className='pb-3'>
+                <YoutubeContainer>
                 <YouTube videoId={trailer?.key} />
+                </YoutubeContainer>
               </div>
             </DialogContent>
+            </DIALOGCONTENT>
           </Paper>
         </DialogActions>
       </Dialog>
@@ -121,22 +130,52 @@ padding:0 calc(3.5vw + 5px);
 position:relative;
 
 `
+const YoutubeContainer = styled.div`
+  width: 100%;
+@media (max-width:426px){
+
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+}
+`;
+
+const JUST = styled.div`
+@media(max-width:426px){
+  padding:0px;
+  margin:0px;
+}
+`
+
+const DIALOGCONTENT = styled.div`
+
+@media (max-width:426px){
+  h2{
+    font-size:15px;
+  }
+
+}
+
+`
 
 const Background = styled.div`
-position:fixed;
-top:50px;
-left:0;
-bottom:0;
-right:0;
-z-index:-1;
-opacity:0.8;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  opacity: 0.8;
 
-img{
-    width:100%;
-    height:calc(100vh-70px);
-    object-fit:cover;
-}
-&:after {
+  img {
+    width: 100%;
+    height: 100%;  // Default height
+    object-fit: cover;
+  }
+
+  &:after {
     content: '';
     position: absolute;
     top: 0;
@@ -146,7 +185,16 @@ img{
     background-color: rgba(0, 0, 0, 0.4);
   }
 
-`
+  @media (max-width: 426px) {
+    img {
+      height: 50vh;  // Updated height to 60vh when the screen width is 426px or less
+    }
+
+    &:after {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  }
+`;
 
 const ImageTitle = styled.div`
 height:30vh;
@@ -159,11 +207,32 @@ img{
     height:100%;
     object-fit:contain;
 }
+@media (max-width:426px){
+  margin-top:0px;
+  min-height:0px;
+  height:0px;
+
+
+  img{
+    position:absolute;
+    display:flex;
+    align-items:center;
+    top:-260px;
+    width:100px;
+
+  }
+}
+
 `
 
 const Controls = styled.div`
 display:flex;
 align-items:center;
+
+@media (max-width:426px){
+  width:100%;
+  padding-top:40px;
+}
 
 `
 
@@ -185,6 +254,35 @@ cursor:pointer;
     color:black;
 }
 
+@media (max-width:426px){
+  font-size:12px;
+  width:80px;
+
+  img{
+    width:25px;
+  }
+
+  padding:5px;
+  height:40px;
+
+}
+
+`
+
+const DiffDIV = styled.div`
+@media (max-width:426px){
+  padding:20px;
+  background-color:rgba(9, 11, 19, 0.2);
+  margin:0px;
+  width:100%;
+  left:0;
+  position:absolute;
+  height:auto;
+  top:26.5rem;
+  backdrop-filter: blur(2px);
+  min-height:0px;
+}
+
 `
 
 const TrailerButton = styled(PlayButton)`
@@ -192,6 +290,10 @@ background:rgba(0,0,0,0.3);
 border:1px solid rgb(249,249,249);
 color:rgb(249,249,249);
 text-transform:uppercase;
+
+@media (max-width:426px){
+  width:110px;
+}
 
 
 `
@@ -211,10 +313,21 @@ span{
     font-size:30px;
 }
 
+@media(max-width:426px){
+  width:30px;
+  height:30px;
+  margin-right:10px;
+}
+
 `
 
 const GroupWatchButton = styled(AddButton)`
 background:rgb(0,0,0);
+
+@media(max-width:426px){
+  width:30px;
+  height:30px;
+}
 
 `
 
@@ -223,6 +336,22 @@ color:rgb(249,249,249);
 font-size:15px;
 min-height:20px;
 margin-top:26px;
+
+h1{
+  color:rgb(249,249,249);
+}
+
+
+
+@media (max-width:426px){
+  h1{
+    font-size:2rem;
+  }
+
+  font-size:12px;
+  margin-top:10px;
+  margin-bottom:10px;
+}
 `
 const Description = styled.div`
 line-height:1.4;
@@ -230,4 +359,10 @@ font-size:20px;
 margin-top:16px;
 color:rgb(249,249,249);
 max-width:760px;
+
+@media (max-width:426px){
+  font-size:0.92rem;
+  margin-top:10px;
+}
+
 `

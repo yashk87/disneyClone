@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,23 @@ function Search() {
       console.error(error);
     }
   }, 300); // Adjust the debounce delay as needed
+
+  useEffect(() => {
+    const storedMovie = localStorage.getItem('movie');
+    if (storedMovie) {
+      setName(storedMovie);
+    }
+  }, []);
+
+  useEffect(() =>{
+    debouncedSearch(name)
+  },[name])
+
+   useEffect(() => {
+    localStorage.setItem('movie', name);
+  }, [movie]);
+
+  console.log(localStorage);
 
   const searchMovie = (query) => {
     setName(query);
@@ -74,12 +91,25 @@ function Search() {
 export default Search;
 
 const Container = styled.div`
+
+@media (max-width:426px){
+  padding-top:70px;
+  input {
+    width:80vw;
+    height:35px;
+  }
+}
 `;
 
 const Content = styled.div`
   display: grid;
   grid-gap: 25px;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  @media (max-width:426px){
+    margin-top:-30px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 `;
 
 const Wrap = styled.div`
@@ -115,4 +145,10 @@ const Label = styled.div`
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(15px);
   border-top: 0.5px solid #454545;
+
+  @media (max-width: 426px) {
+    h5 {
+      font-size: 10px; // Adjust the font size as needed
+    }
+  }
 `;

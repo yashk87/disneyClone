@@ -27,7 +27,7 @@ const SignIn = () => {
                 (
                     <div className='w-full h-full flex justify-center items-center'>
                         <Card
-                            className='mb-15 flex flex-col justify-center items-center w-[300px] h-[350px] bg-slate-400 bg-opacity-50 backdrop-filter backdrop-blur-md border border-gray-300 rounded-md p-8'
+                            className='mb-15 flex flex-col justify-center items-center w-[300px] h-[350px] bg-slate-400 bg-opacity-50 backdrop-filter backdrop-blur-md border border-gray-300 rounded-md p-8 top-80'
                             style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1701483652511-7a419837eedb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZGF5JTIwc2NlbmV8ZW58MHx8MHx8fDA%3D")', backgroundSize: 'cover' }}
                         >
 
@@ -58,6 +58,7 @@ export default SignIn
 const Card = styled.div`
     position: relative;
     z-index: 1;  /* Set a higher z-index for the container */
+
 
     &:after {
         content: '';

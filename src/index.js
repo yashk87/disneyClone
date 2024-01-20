@@ -5,6 +5,9 @@ import { store } from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 const container = document.getElementById('root');
 const root = createRoot(container);
@@ -12,7 +15,9 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <App />
+      </QueryClientProvider>
     </Provider>
   </React.StrictMode>
 );

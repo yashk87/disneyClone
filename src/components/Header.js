@@ -4,8 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { auth } from './config'
 import { onAuthStateChanged } from 'firebase/auth';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-
+import "./responsive.css"
 function Header() {
     const [openModal, setOpenModal] = useState(false)
     const [photo, setPhoto] = useState()
@@ -34,11 +33,11 @@ function Header() {
     }
 
     return (
-        <Nav>
+        <Nav className='header'>
             <Link to="/">
                 <Logo src="/images/logo.svg" />
             </Link>
-            <NavMenu>
+            <NavMenu className='headerMenu'>
                 <Link to="/">
                     <img alt='' src="/images/home-icon.svg" />
                     <span>HOME</span>
@@ -66,6 +65,8 @@ function Header() {
                     <span>SERIES</span>
                 </Link>
             </NavMenu>
+
+          
             {/* <Link to="/fdafd" > */}
 
             {/* <AccountBoxIcon className='cursor-pointer' onClick={() => setOpenModal(true)} /> */}
@@ -101,6 +102,14 @@ display:flex;
 align-items:center;
 padding:0 36px;
 overflow:hidden;
+
+@media (max-width : 426px){
+ width:100%;
+ padding:0px;
+ font-size:10px;
+ display:none;
+
+  }
 
 
 `
@@ -155,6 +164,11 @@ a{
         }
     }
 
+    @media (max-width : 426px){
+        
+       
+         }
+
 }
 
 `
@@ -166,3 +180,4 @@ border-radius:50%;
 cursor:pointer;
 
 `
+
