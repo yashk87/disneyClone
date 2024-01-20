@@ -21,6 +21,7 @@ function Search() {
         },
       });
       setMovie(resp.data.results);
+      console.log(movie);
     } catch (error) {
       console.error(error);
     }
