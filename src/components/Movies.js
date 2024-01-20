@@ -88,10 +88,10 @@ function Movies() {
         {popularShow?.map((movie, idx) => (
 
             <div className='flex p-1'>
-                <Wrap className='mb-6 mt-3' key={idx} onClick={() => details(movie.id)}>
+                <Wrap className='mb-6 mt-3' key={idx}>
                     <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
                     <Label className='flex w-full justify-center items-center'>
-                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'>
+                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'  onClick={() => details(movie.id)}>
                             {movie.name || movie.original_title}
                         </h5>
                     </Label>
@@ -103,10 +103,10 @@ function Movies() {
     <StyledSlider {...settings}>
         {upcomming?.map((movie, idx) => (
             <div className='flex p-1'>
-                <Wrap className='mb-6 mt-3' key={idx} onClick={() => details(movie.id)}>
+                <Wrap className='mb-6 mt-3' key={idx}>
                     <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
                     <Label className='flex w-full justify-center items-center'>
-                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'>
+                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'  onClick={() => details(movie.id)}>
                             {movie.name || movie.original_title}
                         </h5>
                     </Label>
