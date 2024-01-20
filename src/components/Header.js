@@ -27,6 +27,7 @@ function Header() {
     const handleSettings = () => {
         localStorage.clear()
         setOpenModal(false)
+        console.log(openModal);
         navigate('/')
         window.location.reload()
 
