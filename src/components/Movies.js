@@ -3,16 +3,28 @@ import styled from 'styled-components';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
+import Skeleton from '@mui/material/Skeleton';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-function Movies() {
+const MovieSkeleton = () => (
+  <Wrap className='mb-6'>
+    <Skeleton variant="rounded"
+      className="!w-full !h-[40vh]" />
+    <Label className='flex w-full justify-center items-center'>
+      <Skeleton variant="text" width={80} />
+    </Label>
+  </Wrap>
+);
+
+const Movies = () => {
   const [movie, setMovie] = useState([]);
   const navigate = useNavigate();
   const [popularShow, setPopularShow] = useState([]);
-  const [upcomming, setUpcoming] = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
   const imgUrl = 'https://image.tmdb.org/t/p/w500';
   const apiKey = 'f94776fd554e02827b68ce3712c4c690';
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async (url, setState) => {
@@ -24,7 +36,14 @@ function Movies() {
       }
     };
 
-    fetchData('https://api.themoviedb.org/3/trending/all/day?language=en-US', setMovie);
+    const fetchDataWithDelay = async (url, setState) => {
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay for 3 seconds
+      await fetchData(url, setState);
+      setLoading(false);
+    };
+
+    fetchDataWithDelay('https://api.themoviedb.org/3/trending/all/day?language=en-US', setMovie);
     fetchData('https://api.themoviedb.org/3/tv/top_rated', setPopularShow);
     fetchData('https://api.themoviedb.org/3/movie/upcoming', setUpcoming);
   }, []);
@@ -58,7 +77,7 @@ function Movies() {
         breakpoint: 600,
         settings: {
           slidesToShow: 3,
-          slidesToScroll:3,
+          slidesToScroll: 3,
           centerMode: false,
         },
       },
@@ -67,54 +86,64 @@ function Movies() {
 
   return (
     <Container>
-    <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Trending</Padding>
-    <StyledSlider {...settings}>
-        {movie?.map((movie, idx) => (
-            <div className='flex p-1'>
-                <Wrap className='mb-6' key={idx}>
-                    <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
-                    <Label className='flex w-full justify-center items-center'>
-                        <h5 onClick={() => details(movie.id)} style={{ lineHeight: '12px' }} className='font-bold text-xs'>
-                            {movie.name || movie.original_title}
-                        </h5>
-                        {/* <span onClick={() => details(movie.id)}>link</span> */}
-                    </Label>
-                </Wrap>
+      <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Trending</Padding>
+      <StyledSlider {...settings}>
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          movie.map((movie, idx) => (
+            <div className='flex p-1' key={idx}>
+              <Wrap className='mb-6'>
+                <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
+                <Label className='flex w-full justify-center items-center'>
+                  <h5 onClick={() => details(movie.id)} style={{ lineHeight: '12px' }} className='font-bold text-xs'>
+                    {movie.name || movie.original_title}
+                  </h5>
+                </Label>
+              </Wrap>
             </div>
-        ))}
-    </StyledSlider>
-    <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Popular Shows</Padding>
-    <StyledSlider {...settings}>
-        {popularShow?.map((movie, idx) => (
-
-            <div className='flex p-1'>
-                <Wrap className='mb-6 mt-3' key={idx}>
-                    <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
-                    <Label className='flex w-full justify-center items-center'>
-                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'  onClick={() => details(movie.id)}>
-                            {movie.name || movie.original_title}
-                        </h5>
-                    </Label>
-                </Wrap>
+          ))
+        )}
+      </StyledSlider>
+      <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Popular Shows</Padding>
+      <StyledSlider {...settings}>
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          popularShow.map((movie, idx) => (
+            <div className='flex p-1' key={idx}>
+              <Wrap className='mb-6 mt-3'>
+                <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
+                <Label className='flex w-full justify-center items-center'>
+                  <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs' onClick={() => details(movie.id)}>
+                    {movie.name || movie.original_title}
+                  </h5>
+                </Label>
+              </Wrap>
             </div>
-        ))}
-    </StyledSlider>
-    <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Latest Movies</Padding>
-    <StyledSlider {...settings}>
-        {upcomming?.map((movie, idx) => (
-            <div className='flex p-1'>
-                <Wrap className='mb-6 mt-3' key={idx}>
-                    <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
-                    <Label className='flex w-full justify-center items-center'>
-                        <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs'  onClick={() => details(movie.id)}>
-                            {movie.name || movie.original_title}
-                        </h5>
-                    </Label>
-                </Wrap>
+          ))
+        )}
+      </StyledSlider>
+      <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Latest Movies</Padding>
+      <StyledSlider {...settings}>
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          upcoming.map((movie, idx) => (
+            <div className='flex p-1' key={idx}>
+              <Wrap className='mb-6 mt-3'>
+                <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
+                <Label className='flex w-full justify-center items-center'>
+                  <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs' onClick={() => details(movie.id)}>
+                    {movie.name || movie.original_title}
+                  </h5>
+                </Label>
+              </Wrap>
             </div>
-        ))}
-    </StyledSlider>
-</Container>
+          ))
+        )}
+      </StyledSlider>
+    </Container>
   );
 }
 
@@ -132,14 +161,12 @@ const Container = styled.div`
     color: white;
   }
 
-
   @media (max-width:426px){
     .slick-prev:before,
   .slick-next:before {
     font-size: 30px;
     color:#8960fe;
   }
-
 
   .slick-next:before{
     position:relative;
@@ -151,11 +178,6 @@ const Container = styled.div`
     left:12px;
     bottom:18px;
   }
-
-  }
-
-
-
 `;
 
 const StyledSlider = styled(Slider)`
@@ -197,10 +219,10 @@ const Wrap = styled.div`
     border-color: rgba(249, 249, 249, 0.8);
     box-shadow: rgb(0 0 0 / 80%) 0px 40px 58px -16px, rgb(0 0 0 / 72%) 0px 30px 22px -10px;
   }
-@media (max-width:426px){
-    margin-top:0px;
-}
 
+  @media (max-width: 426px) {
+    margin-top: 0px;
+  }
 `;
 
 const Label = styled.div`
@@ -213,36 +235,22 @@ const Label = styled.div`
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(10px);
 
-  @media (max-width:426px){
-
-    h5{
-
-        font-size:10px;
+  @media (max-width: 426px) {
+    h5 {
+      font-size: 10px;
     }
 
-
-    height:30px;
-
-
+    height: 30px;
   }
-
-
 `;
 
-
 const Padding = styled.div`
-
-
-@media (max-width:426px){
-
-    height:auto;
-    font-size:13px;
-    font-weight:bold;
-    margin:0px;
-    padding:0px;
+  @media (max-width: 426px) {
+    height: auto;
+    font-size: 13px;
+    font-weight: bold;
+    margin: 0px;
+    padding: 0px;
     background-color: transparent;
-}
-
-
-
-`
+  }
+  `

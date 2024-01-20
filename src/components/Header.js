@@ -81,7 +81,7 @@ function Header() {
                                 <h1 className='mb-3 text-gray-400'>Logged In as :</h1>
                                 <h1 className='mb-5'>{localStorage.email}</h1>
 
-                                <Button fullWidth variant='contained' color='secondary' onClick={handleSettings}> Log Out</Button>
+                                <Button fullWidth variant='contained' color='secondary' onClick={handleSettings}>Log Out</Button>
 
                             </div>
 
