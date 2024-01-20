@@ -9,13 +9,23 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const MovieSkeleton = () => (
   <Wrap className='mb-6'>
+    <SkeletonWrapper>
     <Skeleton variant="rounded"
       className="!w-full !h-[40vh]" />
+      </SkeletonWrapper>
     <Label className='flex w-full justify-center items-center'>
       <Skeleton variant="text" width={80} />
     </Label>
   </Wrap>
 );
+
+const SkeletonWrapper = styled.div`
+
+@media(426px){
+  height:30vh;
+}
+
+`
 
 const Movies = () => {
   const [movie, setMovie] = useState([]);
@@ -38,7 +48,7 @@ const Movies = () => {
 
     const fetchDataWithDelay = async (url, setState) => {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay for 3 seconds
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Delay for 3 seconds
       await fetchData(url, setState);
       setLoading(false);
     };
