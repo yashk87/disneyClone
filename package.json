@@ -33,6 +33,10 @@
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
+  "resolutions": {
+    "react": "^18.2.0",
+    "react-slick-carousel": "^0.14.9"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
