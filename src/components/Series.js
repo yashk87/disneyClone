@@ -202,7 +202,6 @@ const Padding = styled.div`
 @media (max-width:426px){
 
     height:auto;
-    width:150px;
     font-size:13px;
     padding:0px;
     margin-top:20px;
