@@ -59,7 +59,8 @@ function Search() {
   };
 
   return (
-    <Container style={{ height: "calc(100vh - 70px)" }}>
+    <div className='w-full h-full'>
+    <Container style={{ height: "100vh" }}>
       <div className='w-full flex justify-center gap-5'>
         <input
           value={name}
@@ -86,6 +87,7 @@ function Search() {
         </Container>
       </div>
     </Container>
+    </div>
   );
 }
 
@@ -93,15 +95,14 @@ export default Search;
 
 const Container = styled.div`
 
-@media (max-width:426px){
-  padding-top:70px;
-  input {
-    width:80vw;
-    height:35px;
+  @media (max-width: 426px) {
+    padding-top: 70px;
+    input {
+      width: 80vw;
+      height: 35px;
+    }
   }
-}
 `;
-
 const Content = styled.div`
   display: grid;
   grid-gap: 25px;
