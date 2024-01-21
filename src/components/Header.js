@@ -8,18 +8,23 @@ import "./responsive.css"
 function Header() {
     const [openModal, setOpenModal] = useState(false)
     const [photo, setPhoto] = useState()
+    const [email, setEmail] = useState('')
     const navigate = useNavigate()
 
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+
+            
+            
+            console.log(user);
             if (user) {
+                setEmail(user.email);
                 setPhoto(user.photoURL);
             }
         });
     
         return () => {
-            // Unsubscribe from the listener when the component unmounts
             unsubscribe();
         };
     }, []);
@@ -39,7 +44,7 @@ function Header() {
                 <Logo src="/images/logo.svg" />
             </Link>
             <NavMenu className='headerMenu'>
-                <Link to="/">
+                <Link to="/home">
                     <img alt='' src="/images/home-icon.svg" />
                     <span>HOME</span>
 
@@ -53,7 +58,7 @@ function Header() {
                     <img alt='' src="/images/watchlist-icon.svg" />
                     <span>WATCHLIST</span>
                 </Link>
-                <Link to="/detail/:id">
+                <Link to="/originals">
                     <img alt='' src="/images/original-icon.svg" />
                     <span>ORIGINALS</span>
                 </Link>
@@ -79,7 +84,7 @@ function Header() {
                         <DialogContent>
                             <div>
                                 <h1 className='mb-3 text-gray-400'>Logged In as :</h1>
-                                <h1 className='mb-5'>{localStorage.email}</h1>
+                                <h1 className='mb-5'>{email}</h1>
 
                                 <Button fullWidth variant='contained' color='secondary' onClick={handleSettings}>Log Out</Button>
 

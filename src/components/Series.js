@@ -3,13 +3,28 @@ import styled from 'styled-components';
 import axios from 'axios';
 import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
-
+import Skeleton from '@mui/material/Skeleton';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+const MovieSkeleton = () => (
+  <Wrap className='mb-6'>
+    <SkeletonWrapper>
+    <Skeleton variant="rounded"
+      className="!w-full !h-[40vh]" />
+      </SkeletonWrapper>
+    <Label className='flex w-full justify-center items-center'>
+      <Skeleton variant="text" width={80} />
+    </Label>
+  </Wrap>
+);
+
+
 
 export const Series = () => {
   const imgUrl = 'https://image.tmdb.org/t/p/w500';
   const apiKey = "f94776fd554e02827b68ce3712c4c690"
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate()
   const [popular, setPopular] = useState([])
   const [fiction, setFiction] = useState([])
@@ -24,6 +39,7 @@ export const Series = () => {
         let resp = await axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&with_genres=10765`)
         console.log(resp.data.results);
         setFiction(resp.data.results)
+       
       } catch (error) {
 
       }
@@ -54,6 +70,7 @@ export const Series = () => {
       try {
         let resp = await axios.get(`https://api.themoviedb.org/3/discover/tv?api_key=${apiKey}&with_genres=10751`)
         setFamily(resp.data.results)
+        setLoading(false)
       } catch (error) {
 
       }
@@ -108,7 +125,10 @@ export const Series = () => {
       <Container>
         <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Mystery</Padding>
         <StyledSlider {...settings}>
-          {mystery?.map((series, idx) => (
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          mystery?.map((series, idx) => (
             <div className='flex p-1'>
               <Wrap className='mb-6' key={idx}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
@@ -119,13 +139,16 @@ export const Series = () => {
                 </Label>
               </Wrap>
             </div>
-          ))}
+          )))}
         </StyledSlider>
       </Container>
       <Container>
         <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Animation</Padding>
         <StyledSlider {...settings}>
-          {popular?.map((series, idx) => (
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          popular?.map((series, idx) => (
             <div className='flex p-1'>
               <Wrap className='mb-6' key={idx}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
@@ -136,13 +159,16 @@ export const Series = () => {
                 </Label>
               </Wrap>
             </div>
-          ))}
+          )))}
         </StyledSlider>
       </Container>
       <Container>
         <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Science Fiction</Padding>
         <StyledSlider {...settings}>
-          {fiction?.map((series, idx) => (
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          fiction?.map((series, idx) => (
             <div className='flex p-1'>
               <Wrap className='mb-6' key={idx}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
@@ -153,13 +179,16 @@ export const Series = () => {
                 </Label>
               </Wrap>
             </div>
-          ))}
+          )))}
         </StyledSlider>
       </Container>
       <Container>
         <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Family</Padding>
         <StyledSlider {...settings}>
-          {family?.map((series, idx) => (
+        {loading ? (
+          Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+        ) : (
+          family?.map((series, idx) => (
             <div className='flex p-1'>
               <Wrap className='mb-6' key={idx}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
@@ -170,7 +199,7 @@ export const Series = () => {
                 </Label>
               </Wrap>
             </div>
-          ))}
+          )))}
         </StyledSlider>
       </Container>
     </Container1>
@@ -178,6 +207,15 @@ export const Series = () => {
 }
 
 export default Series;
+
+
+const SkeletonWrapper = styled.div`
+height:auto;
+@media(max-width:426px){
+  height:25vh;
+}
+
+`
 
 const Container = styled.div`
   .slick-prev,
@@ -217,8 +255,9 @@ const StyledSlider = styled(Slider)`
   margin-top: 20px;
 
   .slick-list {
-    overflow: visible;
+    overflow: initial; 
   }
+
 
   button {
     z-index: 1;

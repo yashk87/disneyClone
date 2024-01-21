@@ -19,13 +19,7 @@ const MovieSkeleton = () => (
   </Wrap>
 );
 
-const SkeletonWrapper = styled.div`
 
-@media(426px){
-  height:30vh;
-}
-
-`
 
 const Movies = () => {
   const [movie, setMovie] = useState([]);
@@ -158,6 +152,15 @@ const Movies = () => {
 }
 
 export default Movies;
+
+
+const SkeletonWrapper = styled.div`
+height:auto;
+@media(max-width:426px){
+  height:25vh;
+}
+
+`
 
 const Container = styled.div`
   .slick-prev,

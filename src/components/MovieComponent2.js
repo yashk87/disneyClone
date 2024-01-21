@@ -5,10 +5,24 @@ import Slider from 'react-slick';
 import { useNavigate } from 'react-router-dom';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Dialog, DialogActions, DialogContent, Paper } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import YouTube from 'react-youtube';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+
+
+const MovieSkeleton = () => (
+  <Wrap className='mb-6'>
+    <SkeletonWrapper>
+      <Skeleton variant="rounded"
+        className="!w-full !h-[40vh]" />
+    </SkeletonWrapper>
+    <Label className='flex w-full justify-center items-center'>
+      <Skeleton variant="text" width={80} />
+    </Label>
+  </Wrap>
+);
 
 export const MovieComponent2 = () => {
   const imgUrl = 'https://image.tmdb.org/t/p/w500';
@@ -17,6 +31,7 @@ export const MovieComponent2 = () => {
   const navigate = useNavigate()
 
   const [action, setAction] = useState([])
+  const [loading, setLoading] = useState(true);
   const [adventure, setAdventure] = useState([])
   const [horror, setHorror] = useState([])
   const [fiction, setFiction] = useState([])
@@ -46,6 +61,7 @@ export const MovieComponent2 = () => {
         let resp = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=28`)
         console.log(resp.data.results);
         setAction(resp.data.results)
+        
       } catch (error) {
 
       }
@@ -90,6 +106,7 @@ export const MovieComponent2 = () => {
         let resp = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=12`)
         console.log(resp.data.results);
         setAdventure(resp.data.results)
+        setLoading(false)
       } catch (error) {
 
       }
@@ -116,15 +133,15 @@ export const MovieComponent2 = () => {
     infinite: true,
     speed: 1500,
     slidesToShow: 1,
-    autoplay:true,
-    fade:true,
+    autoplay: true,
+    fade: true,
     slidesToScroll: 1,
-    responsive:[
+    responsive: [
 
       {
-        breakpoint:600,
-        settings:{
-          dots:false
+        breakpoint: 600,
+        settings: {
+          dots: false
         }
       }
     ]
@@ -179,10 +196,11 @@ export const MovieComponent2 = () => {
   return (
     <>
       <StyledCarousel2 className='relative overflow-x-hidden overflow-y-hidden' {...settings2}>
+
         {firstSlider.map((data, idx) => (
           <Wrap1 className='relative'>
             <img src={`${imgUrl2}/${data.backdrop_path}`} alt="Slider 1" />
-            <Wrapper className='z-30 absolute bottom-0 left-0 w-[40%] h-[30vh] p-8 bg-slate-900'>
+            <Wrapper className='z-30 absolute bottom-0 left-0 w-[40%] h-[30vh] p-8'>
               <h1 className='text-4xl' >{data.original_title}</h1>
               <Rating className='flex items-center gap-1'>
                 <svg style={{ color: "#f4c418" }} xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="ipc-icon ipc-icon--star sc-5931bdee-4 eKJPfQ" viewBox="0 0 24 24" fill="currentColor" role="presentation"><path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"></path></svg>{Math.round(data.vote_average * 10) / 10} / 10</Rating>
@@ -201,69 +219,81 @@ export const MovieComponent2 = () => {
         <Container>
           <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Action</Padding>
           <StyledSlider {...settings}>
-            {action?.map((series, idx) => (
-              <div className='flex p-1'>
-                <Wrap className='mb-6' key={idx}>
-                  <img alt='' src={`${imgUrl}/${series.poster_path}`} />
-                  <Label>
-                    <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px'}} className='flex justify-center font-bold text-xs'>
-                      {series.name || series.original_title}
-                    </h5>
-                  </Label>
-                </Wrap>
-              </div>
-            ))}
+            {loading ? (
+              Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+            ) : (
+              action?.map((series, idx) => (
+                <div className='flex p-1'>
+                  <Wrap className='mb-6' key={idx}>
+                    <img alt='' src={`${imgUrl}/${series.poster_path}`} />
+                    <Label>
+                      <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
+                        {series.name || series.original_title}
+                      </h5>
+                    </Label>
+                  </Wrap>
+                </div>
+              )))}
           </StyledSlider>
         </Container>
         <Container>
           <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Horror</Padding>
           <StyledSlider {...settings}>
-            {horror?.map((series, idx) => (
-              <div className='flex p-1'>
-                <Wrap className='mb-6' key={idx}>
-                  <img alt='' src={`${imgUrl}/${series.poster_path}`} />
-                  <Label>
-                    <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px'}} className='flex justify-center font-bold text-xs'>
-                      {series.name || series.original_title}
-                    </h5>
-                  </Label>
-                </Wrap>
-              </div>
-            ))}
+            {loading ? (
+              Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+            ) : (
+              horror?.map((series, idx) => (
+                <div className='flex p-1'>
+                  <Wrap className='mb-6' key={idx}>
+                    <img alt='' src={`${imgUrl}/${series.poster_path}`} />
+                    <Label>
+                      <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
+                        {series.name || series.original_title}
+                      </h5>
+                    </Label>
+                  </Wrap>
+                </div>
+              )))}
           </StyledSlider>
         </Container>
         <Container>
           <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Science Fiction</Padding>
           <StyledSlider {...settings}>
-            {fiction?.map((series, idx) => (
-              <div className='flex p-1'>
-                <Wrap className='mb-6' key={idx}>
-                  <img alt='' src={`${imgUrl}/${series.poster_path}`} />
-                  <Label>
-                    <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px'}} className='flex justify-center font-bold text-xs'>
-                      {series.name || series.original_title}
-                    </h5>
-                  </Label>
-                </Wrap>
-              </div>
-            ))}
+            {loading ? (
+              Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+            ) : (
+              fiction?.map((series, idx) => (
+                <div className='flex p-1'>
+                  <Wrap className='mb-6' key={idx}>
+                    <img alt='' src={`${imgUrl}/${series.poster_path}`} />
+                    <Label>
+                      <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
+                        {series.name || series.original_title}
+                      </h5>
+                    </Label>
+                  </Wrap>
+                </div>
+              )))}
           </StyledSlider>
         </Container>
         <Container>
           <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Comedy</Padding>
           <StyledSlider {...settings}>
-            {comedy?.map((series, idx) => (
-              <div className='flex p-1'>
-                <Wrap className='mb-6' key={idx}>
-                  <img alt='' src={`${imgUrl}/${series.poster_path}`} />
-                  <Label>
-                    <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px'}} className='flex justify-center font-bold text-xs'>
-                      {series.name || series.original_title}
-                    </h5>
-                  </Label>
-                </Wrap>
-              </div>
-            ))}
+            {loading ? (
+              Array.from({ length: 7 }).map((_, idx) => <MovieSkeleton key={idx} />)
+            ) : (
+              comedy?.map((series, idx) => (
+                <div className='flex p-1'>
+                  <Wrap className='mb-6' key={idx}>
+                    <img alt='' src={`${imgUrl}/${series.poster_path}`} />
+                    <Label>
+                      <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
+                        {series.name || series.original_title}
+                      </h5>
+                    </Label>
+                  </Wrap>
+                </div>
+              )))}
           </StyledSlider>
         </Container>
 
@@ -295,6 +325,15 @@ export const MovieComponent2 = () => {
 }
 
 export default MovieComponent2;
+
+const SkeletonWrapper = styled.div`
+height:auto;
+@media(max-width:426px){
+  height:25vh;
+}
+
+`
+
 
 
 const Rating = styled.div`
@@ -377,6 +416,7 @@ const StyledCarousel2 = styled(Slider)`
   height:50vh;
 }
   .slick-list {
+    overflow:visible;
 
   }
 
@@ -429,13 +469,16 @@ const Padding = styled.div`
 
 const Wrapper = styled.div`
 
+background-color:rgba(256,256,256,0.1);
+border-top-right-radius: 15px;
+backdrop-filter: blur(20px);
+
 
 @media (max-width:426px){
   text-align:center;
   width:100%;
   height:15vh;
-  background-color:rgba(0,0,0,0.3);
-  backdrop-filter: blur(10px);
+  border-top-left-radius: 15px;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -458,8 +501,9 @@ const StyledSlider = styled(Slider)`
   margin-top: 20px;
 
   .slick-list {
-    overflow: visible;
+    overflow: initial; 
   }
+
 
   button {
     z-index: 1;
