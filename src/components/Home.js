@@ -1,28 +1,100 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ImageSlider from './ImageSlider';
 import Viewers from './Viewers';
 import Movies from './Movies';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import { auth } from "./config";
+import { addDoc, collection, getDocs, doc, setDoc } from 'firebase/firestore';
+import { firestore } from './config';
+import { onAuthStateChanged } from 'firebase/auth';
+import userEvent from '@testing-library/user-event';
 
 
 function Home() {
+    const [data, setData] = useState([])
     useEffect(() => {
         const isLoggedIn = localStorage.getItem('email') !== null;
         const hasRefreshed = localStorage.getItem('hasRefreshed');
+        console.log(localStorage);
 
         if (isLoggedIn && !hasRefreshed) {
             localStorage.setItem('hasRefreshed', 'true');
             window.location.reload();
         }
     }, []);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    const colRef = collection(firestore, 'users');
+                    const snapShots = await getDocs(colRef);
+                    const docs = snapShots.docs.map((doc) => {
+                        const data = doc.data();
+                        data.id = doc.id;
+                        return data;
+                    });
+
+                    const userExists = docs.some((userData) => userData.email === user.email);
+
+                    if (!userExists) {
+                        const result = await addDoc(collection(firestore, 'users'), {
+                            email: user.email
+                        });
+
+                        console.log('Document added successfully:', result);
+
+                        setData([...docs, { email: user.email, id: result.id }]);
+                    }
+                } catch (error) {
+                    console.error('Error adding document:', error);
+                }
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
+    
+    // useEffect(() => {
+    //     (async () => {
+    //         const result = onAuthStateChanged(auth, async (user) => {
+    //             try {
+    //                 const colRef = collection(firestore, 'users2')
+    //                 const snapShots = await getDocs(colRef)
+    //                 const docs = snapShots.docs.map(async (doc) => {
+    //                     const data = doc.data()
+
+    //                     return data
+
+
+    //                 })
+    //                 console.log(docs);
+
+    //                 if (!present) {
+    //                     const result = await addDoc(collection(firestore, 'users2'), {
+    //                         email: user.email
+    //                     });
+    //                     console.log('Document added successfully:', result);
+
+    //                 }
+
+
+    //             } catch (error) {
+    //                 console.error('Error adding document:', error);
+    //             }
+    //         })
+    //     })
+    //         ()
+    // }, [])
+
     return (
         <Container className='relative'>
             <ImageSlider />
             <Viewers />
             <Movies />
-            
+
 
         </Container>
     );

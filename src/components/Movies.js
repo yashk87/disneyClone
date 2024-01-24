@@ -6,13 +6,15 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MovieSkeleton = () => (
   <Wrap className='mb-6'>
     <SkeletonWrapper>
-    <Skeleton variant="rounded"
-      className="!w-full !h-[40vh]" />
-      </SkeletonWrapper>
+      <Skeleton variant="rounded"
+        className="!w-full !h-[40vh]" />
+    </SkeletonWrapper>
     <Label className='flex w-full justify-center items-center'>
       <Skeleton variant="text" width={80} />
     </Label>
@@ -88,8 +90,15 @@ const Movies = () => {
     ],
   };
 
+  const handleAlert = () => {
+    toast.warning("click on movie label !!", {
+      position: "top-right"
+    });
+  }
+
   return (
     <Container>
+      <ToastContainer theme='dark' />
       <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-2'>Trending</Padding>
       <StyledSlider {...settings}>
         {loading ? (
@@ -97,7 +106,7 @@ const Movies = () => {
         ) : (
           movie.map((movie, idx) => (
             <div className='flex p-1' key={idx}>
-              <Wrap className='mb-6'>
+              <Wrap className='mb-6' onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
                 <Label className='flex w-full justify-center items-center'>
                   <h5 onClick={() => details(movie.id)} style={{ lineHeight: '12px' }} className='font-bold text-xs'>
@@ -116,7 +125,7 @@ const Movies = () => {
         ) : (
           popularShow.map((movie, idx) => (
             <div className='flex p-1' key={idx}>
-              <Wrap className='mb-6 mt-3'>
+              <Wrap className='mb-6 mt-3' onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
                 <Label className='flex w-full justify-center items-center'>
                   <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs' onClick={() => details(movie.id)}>
@@ -135,7 +144,7 @@ const Movies = () => {
         ) : (
           upcoming.map((movie, idx) => (
             <div className='flex p-1' key={idx}>
-              <Wrap className='mb-6 mt-3'>
+              <Wrap className='mb-6 mt-3' onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${movie.poster_path}`} />
                 <Label className='flex w-full justify-center items-center'>
                   <h5 style={{ lineHeight: '12px' }} className='font-bold text-xs' onClick={() => details(movie.id)}>
@@ -258,6 +267,7 @@ const Label = styled.div`
 `;
 
 const Padding = styled.div`
+border-radius:10px;
   @media (max-width: 426px) {
     height: auto;
     font-size: 13px;

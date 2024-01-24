@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MovieSkeleton = () => (
   <Wrap className='mb-6'>
@@ -120,8 +122,17 @@ export const Series = () => {
       },
     ],
   };
+
+  const handleAlert = () => {
+    toast.warning("click on series label !!", {
+      position: "top-right"
+    });
+
+
+  }
   return (
     <Container1>
+      <ToastContainer theme='dark' />
       <Container>
         <Padding style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "8px solid #8a60ff", borderLeft: "8px solid #8a60ff" }} className='w-full flex justify-center p-1 bg-neutral-800 mt-4 labels'>Mystery</Padding>
         <StyledSlider {...settings}>
@@ -130,7 +141,7 @@ export const Series = () => {
         ) : (
           mystery?.map((series, idx) => (
             <div className='flex p-1'>
-              <Wrap className='mb-6' key={idx}>
+              <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                 <Label>
                   <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px', padding: '10px' }} className='flex justify-center font-bold text-xs'>
@@ -150,7 +161,7 @@ export const Series = () => {
         ) : (
           popular?.map((series, idx) => (
             <div className='flex p-1'>
-              <Wrap className='mb-6' key={idx}>
+              <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                 <Label>
                   <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px', padding: '10px' }} className='flex justify-center font-bold text-xs'>
@@ -170,7 +181,7 @@ export const Series = () => {
         ) : (
           fiction?.map((series, idx) => (
             <div className='flex p-1'>
-              <Wrap className='mb-6' key={idx}>
+              <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                 <Label>
                   <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px', padding: '10px' }} className='flex justify-center font-bold text-xs'>
@@ -190,7 +201,7 @@ export const Series = () => {
         ) : (
           family?.map((series, idx) => (
             <div className='flex p-1'>
-              <Wrap className='mb-6' key={idx}>
+              <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                 <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                 <Label>
                   <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px', padding: '10px' }} className='flex justify-center font-bold text-xs'>
@@ -235,6 +246,7 @@ const Container = styled.div`
 `;
 
 const Padding = styled.div`
+border-radius:10px;
 
 
 @media (max-width:426px){

@@ -95,10 +95,6 @@ function Hamburger() {
           <img className='w-7' alt='' src="/images/watchlist-icon.svg" />
           <span>WATCHLIST</span>
         </Link>
-        <Link to="/originals" className='flex gap-2 text-lg items-center ml-2' onClick={handleLinkClick}>
-          <img className='w-7' alt='' src="/images/original-icon.svg" />
-          <span>ORIGINALS</span>
-        </Link>
         <Link to="/movies" className='flex gap-2 text-lg items-center ml-2' onClick={handleLinkClick}>
           <img className='w-7' alt='' src="/images/movie-icon.svg" />
           <span>MOVIES</span>

@@ -8,7 +8,6 @@ import Search from './components/Search';
 import Series from './components/Series';
 import Hamburger from './components/hamburger';
 import MovieComponent2 from './components/MovieComponent2';
-import Originals from './components/Originals';
 import SignIn from './components/SignIn';
 import WatchList from './components/WatchList';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -61,7 +60,6 @@ function App() {
             <Route path="/search" element={<Search />} />
             <Route path="/series" element={<Series />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/originals" element={<Originals />} />
             <Route path="/watchlist" element={<WatchList />} />
             <Route path="/movies" element={<MovieComponent2 />} />
             <Route path="/" element={<SignIn />} />

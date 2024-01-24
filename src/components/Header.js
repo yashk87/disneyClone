@@ -5,29 +5,33 @@ import styled from 'styled-components';
 import { auth } from './config'
 import { onAuthStateChanged } from 'firebase/auth';
 import "./responsive.css"
+import { addDoc, collection, doc, getDoc, getDocs, onSnapshot } from 'firebase/firestore';
+import { app, firestore } from './config'
+import 'firebase/firestore';
+
+
 function Header() {
     const [openModal, setOpenModal] = useState(false)
     const [photo, setPhoto] = useState()
     const [email, setEmail] = useState('')
+    const [data, setData] = useState([])
+    const [present, setPresent] = useState(false)
     const navigate = useNavigate()
 
+    
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-
-            
-            
-            console.log(user);
-            if (user) {
-                setEmail(user.email);
-                setPhoto(user.photoURL);
-            }
+      useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            setEmail(user.email);
+            setPhoto(user.photoURL);
+          }
         });
     
         return () => {
-            unsubscribe();
+          unsubscribe();
         };
-    }, []);
+      }, [email]);
 
     const handleSettings = () => {
         localStorage.clear()
@@ -37,6 +41,8 @@ function Header() {
         window.location.reload()
 
     }
+
+    console.log(data);
 
     return (
         <Nav className='header'>
@@ -58,10 +64,6 @@ function Header() {
                     <img alt='' src="/images/watchlist-icon.svg" />
                     <span>WATCHLIST</span>
                 </Link>
-                <Link to="/originals">
-                    <img alt='' src="/images/original-icon.svg" />
-                    <span>ORIGINALS</span>
-                </Link>
                 <Link to="/movies">
                     <img alt='' src="/images/movie-icon.svg" />
                     <span>MOVIES</span>
@@ -72,7 +74,7 @@ function Header() {
                 </Link>
             </NavMenu>
 
-          
+
             {/* <Link to="/fdafd" > */}
 
             {/* <AccountBoxIcon className='cursor-pointer' onClick={() => setOpenModal(true)} /> */}

@@ -12,3 +12,35 @@ border:none;
 
 
 }
+
+
+
+.thumb {
+   animation-name: likeAnimation;
+   animation-duration: 1.2s;
+   animation-timing-function: ease-in-out;
+   transform-origin: center;
+}
+
+@keyframes likeAnimation {
+   0% {
+      transform: scale(1) rotate(0deg);
+      color: antiquewhite;
+   }
+   20% {
+      transform: scale(1.2) rotate(-60deg);
+      color: aqua;
+   }
+   50% {
+      transform: scale(1) rotate(60deg);
+      color: crimson;
+   }
+   80% {
+      transform: scale(1.2) rotate(-20deg);
+      color: chartreuse;
+   }
+   100% {
+      transform: scale(1) rotate(0deg);
+      color: crimson;
+   }
+}

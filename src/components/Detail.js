@@ -4,34 +4,76 @@ import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import YouTube from 'react-youtube';
-
+import { getFirestore, collection, addDoc, doc, getDoc, getDocs } from 'firebase/firestore'
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import { app, auth, firestore } from './config'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "./responsive.css"
 function Detail() {
   const [singleMovie, setSingleMovie] = useState(null);
+  const [added, setAdded] = useState(false)
   const [openModel, setOpenModel] = useState(false);
   const [trailer, setTrailer] = useState('');
   const { id } = useParams();
+  const [authState, setAuthState] = useState(null)
   const apiKey = 'f94776fd554e02827b68ce3712c4c690';
   const imgUrl = 'https://image.tmdb.org/t/p/original';
+  const auth = getAuth()
+
+
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setAuthState(user);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
+
+  useEffect(() => {
+    if (authState) {
+      (async () => {
+        const userDocRef = doc(firestore, 'users', authState.uid);
+        const wishlistCollectionRef = collection(userDocRef, 'wishlist');
+        const querySnapshot = await getDocs(wishlistCollectionRef);
+        const existingMovies = querySnapshot.docs.map((doc) => doc.data());
+        const isMovieAlreadyAdded = existingMovies.some((movie) => {
+          return (
+            movie.title === (singleMovie?.name || singleMovie?.original_title) &&
+            movie.poster_path === singleMovie?.poster_path &&
+            movie.overview === singleMovie?.overview &&
+            movie.id === singleMovie?.id
+          );
+        });
+        if (isMovieAlreadyAdded) {
+          setAdded(true);
+        }
+      })();
+    }
+  }, [authState, singleMovie]);
+
+
+
 
   useEffect(() => {
     (async () => {
       try {
         let resp = await axios.get(`https://api.themoviedb.org/3/tv/${id}`, { params: { api_key: apiKey } });
 
-        // Check if 'first_air_date' is present in the TV show response
-        console.log(resp.status);
         if (resp.status !== 200) {
           if (!resp.data.hasOwnProperty('first_air_date')) {
             resp = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, { params: { api_key: apiKey } });
           }
         }
 
-        console.log(resp.data);
         setSingleMovie(resp.data);
       } catch (error) {
         console.error(error);
         let resp = await axios.get(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, { params: { api_key: apiKey } });
-        setSingleMovie(resp.data)
+        setSingleMovie(resp.data);
       }
     })();
   }, [id]);
@@ -53,67 +95,111 @@ function Detail() {
     })();
   }, [id, singleMovie]);
 
+  const handleWatchlist = async () => {
+    if (!auth.currentUser || !singleMovie) {
+      return;
+    }
 
+    const userDocRef = doc(firestore, 'users', auth.currentUser.uid);
+    const wishlistCollectionRef = collection(userDocRef, 'wishlist');
+
+    try {
+      const querySnapshot = await getDocs(wishlistCollectionRef);
+
+      const existingMovies = querySnapshot.docs.map((doc) => doc.data());
+      const isMovieAlreadyAdded = existingMovies.some((movie) => {
+        return (
+          movie.title === (singleMovie?.name || singleMovie?.original_title) &&
+          movie.poster_path === singleMovie?.poster_path &&
+          movie.overview === singleMovie?.overview &&
+          movie.id === singleMovie?.id
+        );
+      });
+
+      if (isMovieAlreadyAdded) {
+        console.log('Movie already exists in wishlist');
+        toast.error("movie already present in watchlist", {
+          position: "top-right"
+        });
+        return;
+      }
+      const result = await addDoc(wishlistCollectionRef, {
+        poster_path: singleMovie?.poster_path,
+        title: singleMovie?.name || singleMovie?.original_title,
+        overview: singleMovie?.overview,
+        id: singleMovie?.id
+      });
+
+      console.log('Movie added to wishlist:', result);
+      setAdded(true)
+      toast.success("Added to watchlist", {
+        position: "top-right"
+      });
+    } catch (error) {
+      console.error('Error adding movie to wishlist:', error);
+    }
+  };
 
   return (
     <Container>
+      <ToastContainer theme='dark' />
       {singleMovie && <Background>
         <img src={`${imgUrl}${singleMovie.backdrop_path}`} alt='' />
       </Background>}
 
       <DiffDIV>
-      <ImageTitle>
-        <img onError={(e) => {
-          e.target.src = 'https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78'; // Replace 'path_to_alternative_image.jpg' with the actual path to your alternative image
-        }} className='pb-5' src={`${imgUrl}${singleMovie?.production_companies[0]?.logo_path}`} />
-      </ImageTitle>
-      <Controls>
-        <PlayButton>
-          <img src='/images/play-icon-black.png' />
-          <span className='text-slate-900'>PLAY</span>
-        </PlayButton>
+        <ImageTitle>
+          <img onError={(e) => {
+            e.target.src = 'https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/D7AEE1F05D10FC37C873176AAA26F777FC1B71E7A6563F36C6B1B497CAB1CEC2/scale?width=1440&aspectRatio=1.78'; // Replace 'path_to_alternative_image.jpg' with the actual path to your alternative image
+          }} className='pb-5' src={`${imgUrl}${singleMovie?.production_companies[0]?.logo_path}`} />
+        </ImageTitle>
+        <Controls>
+          <PlayButton>
+            <PlayArrowIcon />
+            <span>PLAY</span>
+          </PlayButton>
 
-        <TrailerButton onClick={() => setOpenModel(true)}>
-          <img src='/images/play-icon-white.png' />
-          <span>Trailer</span>
+          <TrailerButton onClick={() => setOpenModel(true)}>
+            <PlayArrowIcon />
+            <span>Trailer</span>
 
-        </TrailerButton>
-        <AddButton>
-          <span>+</span>
+          </TrailerButton>
+          <AddButton onClick={handleWatchlist}>
+            <span>{added ? <ThumbUpAltIcon className='thumb' /> : "+"}</span>
 
-        </AddButton>
-        <GroupWatchButton>
+          </AddButton>
+          <GroupWatchButton>
 
-          <img src='/images/group-icon.png' />
-        </GroupWatchButton>
+            <img src='/images/group-icon.png' />
+          </GroupWatchButton>
 
-      </Controls>
-      <SubTitle>
-        <h1 className='text-4xl font-semibold mb-3'>{singleMovie?.name || singleMovie?.original_title}</h1>
-        {`${singleMovie?.release_date} * 7m * Family, ${singleMovie?.genres[0].name}, Adult`}
-      </SubTitle>
-      <Description>
-        {singleMovie?.overview}
-      </Description>
+        </Controls>
+        <SubTitle>
+          <h1 className='text-4xl font-semibold mb-3'>{singleMovie?.name || singleMovie?.original_title}</h1>
+          {`${singleMovie?.release_date} * 7m * Family, ${singleMovie?.genres[0].name}, Adult`}
+        </SubTitle>
+        <Description>
+          {singleMovie?.overview}
+        </Description>
       </DiffDIV>
 
       <Dialog open={openModel} maxWidth sx={{ padding: 0, margin: 0, borderRadius: 0 }} onClose={() => setOpenModel(false)}>
         <DialogActions sx={{ padding: 0 }}>
           <Paper sx={{ padding: 0 }} style={{ backgroundColor: '#040714', color: 'white', borderRadius: 0, boxShadow: 'none', padding: 0, margin: 0 }}>
             <DIALOGCONTENT>
-            <DialogContent  >
-              <JUST>
-              <div style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "5px solid #b185ff", borderLeft: "5px solid #b185ff" }} className='w-[250px] flex justify-center p-1 bg-neutral-700 rounded-xl'>
-                <h2 className='text-2xl mt-0'>Official Trailer</h2>
-              </div>
-              </JUST>
-              <div style={{ borderTop: "2px solid #636363 ", }} className='w-full h-3 mt-5'></div>
-              <div style={{ borderBottom: "2px solid #636363" }} className='pb-3'>
-                <YoutubeContainer>
-                <YouTube videoId={trailer?.key} />
-                </YoutubeContainer>
-              </div>
-            </DialogContent>
+              <DialogContent  >
+                <JUST>
+                  <div style={{ borderTop: "2px solid #636363", borderBottom: "2px solid #636363", borderRight: "5px solid #b185ff", borderLeft: "5px solid #b185ff" }} className='w-[250px] flex justify-center p-1 bg-neutral-700 rounded-xl'>
+                    <h2 className='text-2xl mt-0'>Official Trailer</h2>
+                  </div>
+                </JUST>
+                <div style={{ borderTop: "2px solid #636363 ", }} className='w-full h-3 mt-5'></div>
+                <div style={{ borderBottom: "2px solid #636363" }} className='pb-3'>
+                  <YoutubeContainer>
+                    <YouTube videoId={trailer?.key} />
+                  </YoutubeContainer>
+                </div>
+              </DialogContent>
             </DIALOGCONTENT>
           </Paper>
         </DialogActions>
@@ -241,17 +327,22 @@ border-radius:4px;
 font-size:15px;
 display:flex;
 padding:0 24px;
+border:1px solid rgb(249,249,249);
 margin-right:22px;
 height:56px;
-background:rgb(249, 249, 249);
+background:rgba(0,0,0,0.3);
 align-items:center;
-border:none;
 letter-spacing:1.8px;
 cursor:pointer;
+transition:0.3s all ease-in-out;
 
 &:hover{
-    background:rgb(198, 198, 198);
+    background:rgba(256,256,256,0.8);
     color:black;
+
+    span{
+      color:black;
+    }
 }
 
 @media (max-width:426px){
@@ -286,10 +377,11 @@ const DiffDIV = styled.div`
 `
 
 const TrailerButton = styled(PlayButton)`
-background:rgba(0,0,0,0.3);
 border:1px solid rgb(249,249,249);
 color:rgb(249,249,249);
 text-transform:uppercase;
+
+
 
 @media (max-width:426px){
   width:110px;

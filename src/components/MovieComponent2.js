@@ -10,6 +10,8 @@ import YouTube from 'react-youtube';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const MovieSkeleton = () => (
@@ -193,8 +195,16 @@ export const MovieComponent2 = () => {
       setTrailerInfo(null);
     }
   };
+  const handleAlert = () => {
+    toast.warning("click on movie label !!", {
+      position: "top-right"
+    });
+
+
+  }
   return (
     <>
+    <ToastContainer theme='dark' />
       <StyledCarousel2 className='relative overflow-x-hidden overflow-y-hidden' {...settings2}>
 
         {firstSlider.map((data, idx) => (
@@ -224,7 +234,7 @@ export const MovieComponent2 = () => {
             ) : (
               action?.map((series, idx) => (
                 <div className='flex p-1'>
-                  <Wrap className='mb-6' key={idx}>
+                  <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                     <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                     <Label>
                       <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
@@ -244,7 +254,7 @@ export const MovieComponent2 = () => {
             ) : (
               horror?.map((series, idx) => (
                 <div className='flex p-1'>
-                  <Wrap className='mb-6' key={idx}>
+                  <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                     <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                     <Label>
                       <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
@@ -264,7 +274,7 @@ export const MovieComponent2 = () => {
             ) : (
               fiction?.map((series, idx) => (
                 <div className='flex p-1'>
-                  <Wrap className='mb-6' key={idx}>
+                  <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                     <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                     <Label>
                       <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
@@ -284,7 +294,7 @@ export const MovieComponent2 = () => {
             ) : (
               comedy?.map((series, idx) => (
                 <div className='flex p-1'>
-                  <Wrap className='mb-6' key={idx}>
+                  <Wrap className='mb-6' key={idx} onClick={handleAlert}>
                     <img alt='' src={`${imgUrl}/${series.poster_path}`} />
                     <Label>
                       <h5 onClick={() => handleSubmit(series.id, 'series')} style={{ lineHeight: '12px' }} className='flex justify-center font-bold text-xs'>
@@ -450,8 +460,7 @@ const Container = styled.div`
 `;
 
 const Padding = styled.div`
-
-
+border-radius:10px;
 @media (max-width:426px){
 
     height:auto;

@@ -17,16 +17,16 @@ function ImageSlider() {
   return (
     <StyledCarousel {...settings}>
       <Wrap>
-        <img src="/images/slider-badging.jpg" alt="Slider 1" />
+        <img src="/images/one.jpeg" alt="Slider 1" />
       </Wrap>
       <Wrap>
-        <img src="/images/slider-badag.jpg" alt="Slider 2" />
+        <img src="/images/two.jpg" alt="Slider 2" />
       </Wrap>
       <Wrap>
-        <img src="/images/slider-scale.jpg" alt="Slider 3" />
+        <img src="/images/three1.jpeg" alt="Slider 3" />
       </Wrap>
       <Wrap>
-        <img src="/images/slider-scales.jpg" alt="Slider 4" />
+        <img src="/images/four.jpeg" alt="Slider 4" />
       </Wrap>
     </StyledCarousel>
   );
@@ -34,12 +34,13 @@ function ImageSlider() {
 
 const Wrap = styled.div`
   cursor: pointer;
-
+ 
+  border-radius:10px;
   img {
     width: 100%;
     height: 100%;
+    border-radius:10px;
     border: 4px solid transparent;
-    border-radius: 4px;
     box-shadow: rgb(0 0 0 / 69%) 0px 26px 30px -10px, rgb(0 0 0 / 73%) 0px 16px 10px -10px;
     transition-duration: 300ms;
     object-fit: cover; /* Maintain aspect ratio without stretching */
