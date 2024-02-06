@@ -65,7 +65,7 @@ function Home() {
     const handleAnimationComplete = () => {
         setTimeout(() => {
             setLoading(false);
-        }, animationData.op * 10 * 1000);
+        }, animationData.op * 2 * 1000);
         setLoading(false)
     };
 
