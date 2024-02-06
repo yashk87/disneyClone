@@ -167,8 +167,8 @@ function Detail() {
             <span>Trailer</span>
 
           </TrailerButton>
-          <AddButton onClick={handleWatchlist}>
-            <span>{added ? <Lottie loop={false} onComplete={() => thumbRef.current.pause()} lottieRef={thumbRef} animationData={animationData} style={{ width: '70px', height: '70px' }} /> : "+"}</span>
+          <AddButton className='flex justify-center items-center' onClick={handleWatchlist}>
+            <span>{added ? <Lottie loop={false} onComplete={() => thumbRef.current.pause()} lottieRef={thumbRef} animationData={animationData} style={{ width: '60px', height: '60px' }} /> : "+"}</span>
 
           </AddButton>
           <GroupWatchButton>
