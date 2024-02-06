@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Dialog, DialogContent, DialogActions, Paper } from '@mui/material';
 import styled from 'styled-components';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import YouTube from 'react-youtube';
+import Lottie from 'lottie-react'
+import animationData from "../components/Animation - 1707196824512.json"
 import { getFirestore, collection, addDoc, doc, getDoc, getDocs } from 'firebase/firestore'
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -13,6 +15,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import "./responsive.css"
 function Detail() {
+  const thumbRef = useRef()
   const [singleMovie, setSingleMovie] = useState(null);
   const [added, setAdded] = useState(false)
   const [openModel, setOpenModel] = useState(false);
@@ -165,7 +168,7 @@ function Detail() {
 
           </TrailerButton>
           <AddButton onClick={handleWatchlist}>
-            <span>{added ? <ThumbUpAltIcon className='thumb' /> : "+"}</span>
+            <span>{added ? <Lottie loop={false} onComplete={() => thumbRef.current.pause()} lottieRef={thumbRef} animationData={animationData} style={{ width: '70px', height: '70px' }} /> : "+"}</span>
 
           </AddButton>
           <GroupWatchButton>
